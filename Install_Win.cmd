@@ -6,7 +6,7 @@
 :: Start Installation Windows
 ECHO on
 ECHO "Installation wird begonnen"
-:: Erstelen Orderner Struktur
+:: Erstellen der Ordner Struktur
 cd %windir%
 cd ../
 cd Program Files
@@ -17,4 +17,4 @@ MD LOG
 MD SOURCE
 MD CONFIG
 
-:: Installirt Programm von Git
+:: Installiert Programm von Git
