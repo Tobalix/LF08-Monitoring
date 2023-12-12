@@ -1,6 +1,6 @@
-mkdir C:\Users\%USER%\Test
+mkdir %USERPROFILE%\Test
 
-cd C:\Users\%USER%\Test\
+cd %USERPROFILE%\Test\
 
 git clone https://github.com/Tobalix/LF08-Monitoring.git
 
