@@ -4,7 +4,7 @@ import logging
 import datetime
 import time
 
-print(psutil.virtual_memory().percent)
+
 
 def setup_logger(name, log_file, level=logging.INFO):
     """To setup as many loggers as you want"""
