@@ -5,7 +5,6 @@ import datetime
 import time
 
 
-
 def setup_logger(name, log_file, level=logging.INFO):
     """To setup as many loggers as you want"""
     handler = logging.FileHandler(log_file)
@@ -16,29 +15,23 @@ def setup_logger(name, log_file, level=logging.INFO):
 
 
 def cpu_log(PATH, HARDWARN):
-
     cpu_use = psutil.cpu_percent()
     cpu_log = setup_logger('cpu_logger', '%s_CPU.log' % PATH)
     dt_string = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     if cpu_use >= HARDWARN:
         cpu_log.warning("%s CPU: %s" % (dt_string, cpu_use))
-        logging.warning(f"CPU is {cpu_use}%")
     else:
         cpu_log.info("%s CPU: %s" % (dt_string, cpu_use))
-        logging.info(f"CPU is {cpu_use}%")
 
 
 def ram_log(PATH, HARDWARN):
-
     ram_use = psutil.virtual_memory().percent
     ram_log = setup_logger('ram_logger', '%s_RAM.log' % PATH)
     dt_string = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     if ram_use >= HARDWARN:
         ram_log.warning("%s RAM: %s" % (dt_string, ram_use))
-        logging.warning(f"RAM is {ram_use}%")
     else:
         ram_log.info("%s RAM: %s" % (dt_string, ram_use))
-        logging.info(f"RAM is {ram_use}%")
 
 
 x = 0
