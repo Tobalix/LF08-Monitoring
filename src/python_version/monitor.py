@@ -29,7 +29,7 @@ def ram_log(PATH):
         logging.info("%s RAM: %s" %( dt_string, RAM_USE) )
 
 
-while(x < 100):
+while(x < 10):
     cpu_log("")
     ram_log("")
     time.sleep(2)
