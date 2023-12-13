@@ -42,7 +42,6 @@ def send_mail():
         server = smtplib.SMTP(smtp_server, port, timeout=10)  # Increase the timeout value
         server.starttls(context=context)  # Secure the connection
         server.login(sender_email, password)
-        # TODO: Send email here
         server.sendmail(sender_email, receiver_email, message.as_string())
     except Exception as e:
         # Print any error messages to stdout
