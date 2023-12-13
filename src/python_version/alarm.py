@@ -1,32 +1,52 @@
 import smtplib
-from email.mime.text import MIMEText
+import ssl
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from src.python_version.monitor import cpu_log, ram_log, disk_log
 
-def send_email(subject, body, to_email, smtp_server, smtp_port, smtp_username, smtp_password):
-    # Create a MIME object for the email
-    message = MIMEMultipart()
-    message['From'] = smtp_username
-    message['To'] = to_email
-    message['Subject'] = subject
 
-    # Attach the body of the email
-    message.attach(MIMEText(body, 'plain'))
+def send_mail():
+    smtp_server = "smtp.mail.de"
+    port = 587
+    sender_email = "IT.Monitor@mail.de"
+    receiver_email = "mike.jessen97@gmail.com"
+    password = "bagel-footman-prevent"
 
-    # Connect to the SMTP server
-    with smtplib.SMTP(smtp_server, smtp_port) as server:
-        # Login to the SMTP server (if authentication is required)
-        server.login(smtp_username, smtp_password)
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Monitoring Alarm"
+    message["From"] = sender_email
+    message["To"] = receiver_email
 
-        # Send the email
-        server.sendmail(smtp_username, to_email, message.as_string())
+    html = """\
+    <html>
+      <body>
+        <p>Hello,<br>
+           Your alarm has triggered for<br>
+           <a href="http://www.realpython.com">ALARM</a> 
+           please refer to this link to see the alert.
+        </p>
+      </body>
+    </html>
+    """
+    part = MIMEText(html, "html")
+    message.attach(part)
 
-# Example usage
-subject = "Test Email"
-body = "Hello, this is a test email sent from Python!"
-to_email = "recipient@example.com"
-smtp_server = "your_smtp_server.com"
-smtp_port = 587  # Port number may vary, use the correct one for your SMTP server
-smtp_username = "your_email@example.com"
-smtp_password = "your_email_password"
+    context = ssl.create_default_context()
 
-send_email(subject, body, to_email, smtp_server, smtp_port, smtp_username, smtp_password)
+    server = None
+
+    # Try to log in to the server and send email
+    try:
+        server = smtplib.SMTP(smtp_server, port, timeout=10)
+        server.starttls(context=context)  # Secure the connection
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message.as_string())
+    except Exception as e:
+        # Print any error messages to stdout
+        print(e)
+    finally:
+        if server:
+            server.quit()
+
+
+send_mail()
