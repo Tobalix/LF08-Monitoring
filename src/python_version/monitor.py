@@ -21,8 +21,8 @@ def cpu_log(PATH, HARDWARN):
     CPU_LOG.addHandler(CPU_handler)
 
     dt_string = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-    if CPU_USE >= HARDWARN:
-        CPU_LOG.warning("%s CPU: %s" % (dt_string, CPU_USE))
+    if cpu_use >= HARDWARN:
+        cpu_log.warning("%s CPU: %s" % (dt_string, cpu_use))
     else:
         CPU_LOG.info("%s CPU: %s" % (dt_string, CPU_USE))
     CPU_LOG.removeHandler(hdlr=CPU_handler)
@@ -38,8 +38,8 @@ def ram_log(PATH, HARDWARN):
     RAM_LOG.addHandler(RAM_handler)
 
     dt_string = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-    if RAM_USE >= HARDWARN:
-        RAM_LOG.warning("%s RAM: %s" % (dt_string, RAM_USE))
+    if ram_use >= HARDWARN:
+        ram_log.warning("%s RAM: %s" % (dt_string, ram_use))
     else:
         RAM_LOG.info("%s RAM: %s" % (dt_string, RAM_USE))
     
