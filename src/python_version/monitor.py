@@ -4,74 +4,80 @@ import logging
 import datetime
 import time
 
+CPU_INTERVALL = 1  #Interval der Prüfung in Sekuden
+RAM_INTERVALL = 5
+DISK_INTERVALL = 10
 
-def setup_logger(name, log_file, level=logging.INFO):
-    """To setup as many loggers as you want"""
-    handler = logging.FileHandler(log_file)
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
-    logger.addHandler(handler)
-    return logger
+LOG_PATH = "C:\\Users\\tobal\\"
+DISK_PATH = "C:"
 
 
 def cpu_log(PATH, HARDWARN):
-    cpu_use = psutil.cpu_percent()
-    cpu_log = setup_logger('cpu_logger', '%s_CPU.log' % PATH)
+    CPU_USE =  psutil.cpu_percent()
+
+    CPU_handler = logging.FileHandler('%s%s_CPU.log' %(PATH,datetime.date.today()))
+    CPU_LOG = logging.getLogger('cpu_logger')
+    CPU_LOG.setLevel(logging.INFO)
+    CPU_LOG.addHandler(CPU_handler)
+
     dt_string = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     if cpu_use >= HARDWARN:
         cpu_log.warning("%s CPU: %s" % (dt_string, cpu_use))
     else:
-        cpu_log.info("%s CPU: %s" % (dt_string, cpu_use))
+        CPU_LOG.info("%s CPU: %s" % (dt_string, CPU_USE))
+    CPU_LOG.removeHandler(hdlr=CPU_handler)
+    CPU_handler.close()
+    return
 
 
 def ram_log(PATH, HARDWARN):
-    ram_use = psutil.virtual_memory().percent
-    ram_log = setup_logger('ram_logger', '%s_RAM.log' % PATH)
+    RAM_USE = psutil.virtual_memory().percent
+    RAM_handler = logging.FileHandler('%s%s_RAM.log' %(PATH,datetime.date.today()))
+    RAM_LOG = logging.getLogger('ram_logger')
+    RAM_LOG.setLevel(logging.INFO)
+    RAM_LOG.addHandler(RAM_handler)
+
     dt_string = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     if ram_use >= HARDWARN:
         ram_log.warning("%s RAM: %s" % (dt_string, ram_use))
     else:
-        ram_log.info("%s RAM: %s" % (dt_string, ram_use))
+        RAM_LOG.info("%s RAM: %s" % (dt_string, RAM_USE))
+    
+    RAM_LOG.removeHandler(hdlr=RAM_handler)
+    RAM_handler.close()
+    return
 
+def disk_log(PATH, HARDWARN):
+    DISK_FREE = psutil.disk_usage(DISK_PATH).percent
+    #DISK_LOG = setup_logger('ram_logger', '%s%s_DISK.log' %(PATH,datetime.date.today()))
 
+    DISK_handler = logging.FileHandler('%s%s_DISK.log' %(PATH,datetime.date.today()))
+    DISK_LOG = logging.getLogger('disk_logger')
+    DISK_LOG.setLevel(logging.INFO)
+    DISK_LOG.addHandler(DISK_handler)
+
+    dt_string = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+    if DISK_FREE >= HARDWARN:
+        DISK_LOG.warning("%s DISK FREE: %s" % (dt_string, DISK_FREE))
+    else:
+        DISK_LOG.info("%s DISK FREE: %s" % (dt_string, DISK_FREE))
+    #print("disk")
+    DISK_LOG.removeHandler(hdlr=DISK_handler)
+    return
 x = 0
 
-while (x < 10):
-    cpu_log(datetime.date.today(), 80)
-    ram_log(datetime.date.today(), 80)
-    time.sleep(2)
+# 
+while (x < 100):
+    print(x)
+    if x%CPU_INTERVALL == 0:
+        cpu_log(LOG_PATH, 80)
+        print("CPU")
+    if x%RAM_INTERVALL == 0:
+        ram_log(LOG_PATH, 80)
+        print("RAM")
+    if x%DISK_INTERVALL == 0:
+        disk_log(LOG_PATH, 80)
+        print("DISK")
+    time.sleep(1)
     x = x + 1
 
-# def cpu_log(PATH):
-#     cpu_use = psutil.cpu_percent()
-#     logging.basicConfig(filename="%sCPU.log" % PATH, encoding='utf-8', level=logging.DEBUG)
-#     # logging.debug('This message should go to the log file')
-#     dt_string = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-#     if cpu_use >= 80:
-#         logging.warning("%s CPU: %s" % (dt_string, cpu_use))
-#     else:
-#         logging.info("%s CPU: %s" % (dt_string, cpu_use))
-#     # logging.warning('And this, too')
-#     # logging.error('And non-ASCII stuff, too, like Øresund and Malmö')
-#
-#
-# x = 0
-#
-#
-# def ram_log(PATH):
-#     ram_use = psutil.virtual_memory().percent
-#     logging.basicConfig(filename="%sRAM.log" % PATH, encoding='utf-8', level=logging.DEBUG)
-#     # logging.debug('This message should go to the log file')
-#     dt_string = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-#     if ram_use >= 80:
-#         logging.warning("%s RAM: %s" % (dt_string, ram_use))
-#     else:
-#         logging.info("%s RAM: %s" % (dt_string, ram_use))
-#
-#
-# while (x < 10):
-#     cpu_log("")
-#     ram_log("")
-#     time.sleep(2)
-#     x = x + 1
-#     print(x)
