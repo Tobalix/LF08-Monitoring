@@ -1,32 +1,50 @@
 import smtplib
-from email.mime.text import MIMEText
+import ssl
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
-def send_email(subject, body, to_email, smtp_server, smtp_port, smtp_username, smtp_password):
-    # Create a MIME object for the email
-    message = MIMEMultipart()
-    message['From'] = smtp_username
-    message['To'] = to_email
-    message['Subject'] = subject
+smtp_server = "smtp.mail.de"
+port = 587  # For STARTTLS
+sender_email = "IT.Monitor@mail.de"
+receiver_email = "mike.jessen97@gmail.com"
+password = "bagel-footman-prevent"
 
-    # Attach the body of the email
-    message.attach(MIMEText(body, 'plain'))
+message = MIMEMultipart("alternative")
+message["Subject"] = "multipart test"
+message["From"] = sender_email
+message["To"] = receiver_email
 
-    # Connect to the SMTP server
-    with smtplib.SMTP(smtp_server, smtp_port) as server:
-        # Login to the SMTP server (if authentication is required)
-        server.login(smtp_username, smtp_password)
+html = """\
+<html>
+  <body>
+    <p>Hi,<br>
+       How are you?<br>
+       <a href="http://www.realpython.com">Real Python</a> 
+       has many great tutorials.
+    </p>
+  </body>
+</html>
+"""
+part = MIMEText(html, "html")
+# Send email here
+message.attach(part)
 
-        # Send the email
-        server.sendmail(smtp_username, to_email, message.as_string())
+# Create a secure SSL context
+context = ssl.create_default_context()
 
-# Example usage
-subject = "Test Email"
-body = "Hello, this is a test email sent from Python!"
-to_email = "recipient@example.com"
-smtp_server = "your_smtp_server.com"
-smtp_port = 587  # Port number may vary, use the correct one for your SMTP server
-smtp_username = "your_email@example.com"
-smtp_password = "your_email_password"
+# Initialize server to None
+server = None
 
-send_email(subject, body, to_email, smtp_server, smtp_port, smtp_username, smtp_password)
+# Try to log in to the server and send email
+try:
+    server = smtplib.SMTP(smtp_server, port, timeout=10)  # Increase the timeout value
+    server.starttls(context=context)  # Secure the connection
+    server.login(sender_email, password)
+    # TODO: Send email here
+    server.sendmail(sender_email, receiver_email, message.as_string())
+except Exception as e:
+    # Print any error messages to stdout
+    print(e)
+finally:
+    if server:
+        server.quit()
