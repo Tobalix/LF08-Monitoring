@@ -1,3 +1,4 @@
+import logging
 import smtplib
 import ssl
 from email.mime.multipart import MIMEMultipart
@@ -7,7 +8,7 @@ from email.mime.text import MIMEText
 
 def send_mail():
     smtp_server = "smtp.mail.de"
-    port = 587
+    port = 25
     sender_email = "IT.Monitor@mail.de"
     receiver_email = "mike.jessen97@gmail.com"
     password = "bagel-footman-prevent"
@@ -41,6 +42,8 @@ def send_mail():
         server.starttls(context=context)  # Secure the connection
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, message.as_string())
+        logging.debug(f"Email sent: {message}")
+        print("Email sent")
     except Exception as e:
         # Print any error messages to stdout
         print(e)
