@@ -1,6 +1,6 @@
 import unittest
 
 
-class TestLoggingFunctions(unittest.TestCase):
+class TestMonitoring(unittest.TestCase):
  def setUp(self):
      self.assertTrue(True)
