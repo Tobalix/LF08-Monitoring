@@ -1,0 +1,14 @@
+installer ist für aufbau des systems notwendig
+monitor nimmt daten auf
+daten werden von alarm und dashboard gelesen/verarbeitet
+dashboard projiziert daten
+ggf. filtert User die Daten je nachdem was er benötigt (optionen: cpu, ram, disc auslastung, temp für cpu)
+if schwellenwert überstiegen dann schickt alarm mail ansonsten alles easy
+
+
+
+----
+
+ggf erweiterung: alle 24 stunden automatischer report, Zusammenfassung aller ereignisse/daten per mail (durschnittswert, peak, low)
+
+
