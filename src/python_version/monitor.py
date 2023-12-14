@@ -5,9 +5,7 @@ import time
 import configparser
 import os
 import wmi
-import clr
-clr.AddReference(r'OpenHardwareMonitor/OpenHardwareMonitorLib')
-from OpenHardwareMonitor.Hardware import Computer
+
 
 #Config file is loaded
 #CONFIG_PATH = os.environ["Monitor"]+"\\config.ini"
