@@ -5,9 +5,8 @@ import time
 import configparser
 import os
 import wmi
-import clr
-clr.AddReference(r'OpenHardwareMonitor/OpenHardwareMonitorLib')
-from OpenHardwareMonitor.Hardware import Computer
+import win32evtlog
+
 
 #Config file is loaded
 #CONFIG_PATH = os.environ["Monitor"]+"\\config.ini"
@@ -34,8 +33,13 @@ DISK_PATH       = str(config['Monitor Disk']["DISK_PATH"])
 
 TEMP_LOGGING    = bool(config['Monitor Temp']["TEMP_LOGGING"])
 TEMP_INTERVAL   = int(config['Monitor Temp']["TEMP_INTERVAL"])
-TEMP_SOFTWARN   = int(config['Monitor Temp']["TEMP_INTERVAL"])
-TEMP_HARDWARN   = int(config['Monitor Temp']["TEMP_INTERVAL"])
+TEMP_SOFTWARN   = int(config['Monitor Temp']["TEMP_SOFTWARN"])
+TEMP_HARDWARN   = int(config['Monitor Temp']["TEMP_HARDWARN"])
+
+LOGON_LOGGING   = bool(config['Monitor Logon']["LOGON_LOGGING"])
+LOGON_INTERVAL  = int(config['Monitor Logon']["LOGON_INTERVAL"])
+LOGON_SOFTWARN  = int(config['Monitor Logon']["LOGON_INTERVAL"])
+LOGON_HARDWARN  = int(config['Monitor Logon']["LOGON_INTERVAL"])
 
 LOG_PATH        = "C:\\Users\\tobal\\"
 
@@ -104,12 +108,9 @@ def disk_logger(PATH):
     return
 
 def temp_logger(PATH):
-    #Free Diskspace in percent
-
-
-    temp_val = (wmi.WMI(namespace="root\\wmi")-2732)/10
-    #print(w_temp.MSAcpi_ThermalZoneTemperature()[0].CurrentTemperature)
-
+    #Temperature in Celsius
+    temp_val = wmi.WMI(namespace="root\\wmi").MSAcpi_ThermalZoneTemperature()[0].CurrentTemperature
+    temp_val = (temp_val-2732)/10
     #Create/Open Log file
     temp_handler = logging.FileHandler('%s%s_TEMP.log' %(PATH,datetime.date.today()))
     temp_log = logging.getLogger('temp_log')
@@ -117,19 +118,55 @@ def temp_logger(PATH):
     temp_log.addHandler(temp_handler)
     dt_string = datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S")
     #Wirte the Log Entry
-    if temp_val >= DISK_HARDWARN:
-        temp_log.warning("WARNING %s DISK FREE: %s" % (dt_string, temp_val))
-    elif temp_val >= DISK_SOFTWARN:
-        temp_log.info("INFO %s DISK FREE: %s" % (dt_string, temp_val))
+    if temp_val >= TEMP_HARDWARN:
+        temp_log.warning("WARNING %s TEMP: %s" % (dt_string, temp_val))
+    elif temp_val >= TEMP_SOFTWARN:
+        temp_log.info("INFO %s TEMP: %s" % (dt_string, temp_val))
     else:
-        temp_log.debug("DEBUG %s DISK FREE: %s" % (dt_string, temp_val))
+        temp_log.debug("DEBUG %s TEMP: %s" % (dt_string, temp_val))
     #close the Log file
     temp_log.removeHandler(hdlr=temp_handler)
     temp_handler.close()
     return
 
+def logon_logger(PATH):
+    #logon reader from the eventlog
+    log_type = "Security"
+    log_source = "Security"
+    num_records=1000
+    handle = win32evtlog.OpenEventLog(None, log_source)
+    try:
+        flags = win32evtlog.EVENTLOG_BACKWARDS_READ | win32evtlog.EVENTLOG_SEQUENTIAL_READ
+        total = win32evtlog.GetNumberOfEventLogRecords(handle)
+        #Create/Open Log file
+        logon_handler = logging.FileHandler('%s%s_LOGON.log' %(PATH,datetime.date.today()))
+        logon_log = logging.getLogger('logon_log')
+        logon_log.setLevel(logging.DEBUG)
+        logon_log.addHandler(logon_handler)
+        dt_string = datetime.datetime.now().strftime("%Y/%m/%d_%H:%M:%S")
+
+        if num_records > total:
+            num_records = total
+        for counter in range(num_records):
+            event_tuple = win32evtlog.ReadEventLog(handle, flags, 0)
+            for part in event_tuple:
+                if part.EventID == (4624 or 4625 or 4634 or 4647 or 4648 or 4779) and (part.TimeGenerated+datetime.timedelta(seconds =LOGON_INTERVAL)) > datetime.datetime.now():
+                    print(f"Record Number: %s" %part.RecordNumber+ "\n""Event Type: %s" %part.EventType+ "\n""Event Category: %s" %part.EventCategory+ "\n""Time Generated: %s"%part.TimeGenerated+ "\n""Event ID: %s"%part.EventID+ "\n""Event Strings: %s"%part.Data+ "\n"+"\n" + "-"*50 + "\n"+ "\n")
+                        #Write Log file
+                    if part.EventID == 4624:
+                        logon_log.info("INFO %s LOGON: %s" % (dt_string, "Erfolgreicher Anmeldeversuch"))
+                    elif part.EventID == 4625:
+                        logon_log.warning("WARNING %s LOGON: %s" % (dt_string, "Fehelgeschlagener Anmeldeversuch"))
+
+            
+            #Close Log file
+        logon_log.removeHandler(hdlr=logon_handler)
+        logon_handler.close()            
+    finally:
+        win32evtlog.CloseEventLog(handle)
+    return
 x = 0
-while (x < 1000):
+while (x == x):
     #print(x)
     if (x%CPU_INTERVAL == 0) and CPU_LOGGING == True:
         cpu_logger(LOG_PATH)
@@ -144,6 +181,10 @@ while (x < 1000):
     if x%TEMP_INTERVAL == 0 and TEMP_LOGGING == True:
         temp_logger(LOG_PATH)
         #print("TEMP")
+    if x%LOGON_INTERVAL == 0 and LOGON_LOGGING == True:
+        logon_logger(LOG_PATH)
+        #print("TEMP")
     time.sleep(1)
+    print(datetime.timedelta(seconds=x))
     x = x + 1
 
