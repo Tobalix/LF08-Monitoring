@@ -3,7 +3,9 @@ import smtplib
 import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-#from src.python_version.monitor import cpu_log, ram_log, disk_log
+
+
+# from src.python_version.monitor import cpu_log, ram_log, disk_log
 
 
 def send_mail():
@@ -23,7 +25,7 @@ def send_mail():
       <body>
         <p>Hello,<br>
            Your alarm has triggered for<br>
-           <a href="http://www.realpython.com">ALARM</a> 
+           <a href="https://theuselessweb.com/">ALARM</a> 
            please refer to this link to see the alert.
         </p>
       </body>
