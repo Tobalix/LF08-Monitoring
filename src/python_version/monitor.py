@@ -11,11 +11,12 @@ import win32evtlog
 #Config file is loaded
 #CONFIG_PATH = os.environ["Monitor"]+"\\config.ini"
 config = configparser.ConfigParser()
-config.read("C:\\GitHubRepo\\city_game\\LF08-Monitoring\\config.ini")
+config.read("C:\\Users\\mikej\\OneDrive\\Berufsschule\\LF8\\LF08-Monitoring\\config.ini")
 #config.read(CONFIG_PATH)
 
 #Values from the config.ini
 CPU_LOGGING     = bool(config['Monitor CPU']["CPU_LOGGING"])
+print(CPU_LOGGING)
 CPU_INTERVAL    = int(config['Monitor CPU']["CPU_INTERVAL"])
 CPU_SOFTWARN    = int(config['Monitor CPU']["CPU_SOFTWARN"])
 CPU_HARDWARN    = int(config['Monitor CPU']["CPU_HARDWARN"])
@@ -41,7 +42,7 @@ LOGON_INTERVAL  = int(config['Monitor Logon']["LOGON_INTERVAL"])
 LOGON_SOFTWARN  = int(config['Monitor Logon']["LOGON_INTERVAL"])
 LOGON_HARDWARN  = int(config['Monitor Logon']["LOGON_INTERVAL"])
 
-LOG_PATH        = "C:\\Users\\tobal\\"
+LOG_PATH        = "..\\..\\logs\\"
 
 
 def cpu_logger(PATH):
@@ -178,11 +179,11 @@ while (x == x):
         disk_logger(LOG_PATH)
         #print("DISK")
     time.sleep(0)
-    if x%TEMP_INTERVAL == 0 and TEMP_LOGGING == True:
-        temp_logger(LOG_PATH)
+   # if x%TEMP_INTERVAL == 0 and TEMP_LOGGING == True:
+   #     temp_logger(LOG_PATH)
         #print("TEMP")
-    if x%LOGON_INTERVAL == 0 and LOGON_LOGGING == True:
-        logon_logger(LOG_PATH)
+  #  if x%LOGON_INTERVAL == 0 and LOGON_LOGGING == True:
+  #      logon_logger(LOG_PATH)
         #print("TEMP")
     time.sleep(1)
     print(datetime.timedelta(seconds=x))
