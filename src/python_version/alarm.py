@@ -12,7 +12,7 @@ def send_mail():
     smtp_server = "smtp.mail.de"
     port = 25
     sender_email = "IT.Monitor@mail.de"
-    receiver_email = "mike.jessen97@gmail.com"
+    receiver_email = "IT.Monitor@mail.de"
     password = "bagel-footman-prevent"
 
     message = MIMEMultipart("alternative")
