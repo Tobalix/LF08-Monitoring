@@ -1,6 +1,7 @@
 import logging
 import smtplib
 import ssl
+import time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -54,4 +55,20 @@ def send_mail():
             server.quit()
 
 
-send_mail()
+def alarm():
+    x = 0
+    while (x == x):
+        cpu_log = open('../../logs/2023-12-20_CPU.log', 'r')
+        Lines = cpu_log.readlines()
+
+        count = 0
+        # Strips the newline character
+        for line in Lines:
+            count += 1
+            print("Line{}: {}".format(count, line.strip()))
+        print(x)
+        send_mail()
+        time.sleep(60)
+
+
+alarm()
