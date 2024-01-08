@@ -22,6 +22,7 @@ def send_mail(timenow, log_file_path):
     sender_email = "IT.Monitor@mail.de"
     receiver_email = "IT.Monitor@mail.de"
     password = "bagel-footman-prevent"
+    alarm_type = "CPU"
 
     message = MIMEMultipart("alternative")
     message["Subject"] = "Monitoring Alarm"
@@ -29,14 +30,15 @@ def send_mail(timenow, log_file_path):
     message["To"] = receiver_email
 
     with open(log_file_path, "r") as log_file:
-        log_content = log_file.read()
+        log_content = log_file.readlines()[-1]
+
 
     html = f"""\
     <html>
       <body>
         <p>Hello,<br>
-           Your alarm has triggered at {timenow} for<br>
-           <a href="https://theuselessweb.com/">ALARM</a> 
+           Your alarm has triggered at {timenow} for {alarm_type} <br>
+           Last Value of {alarm_type}
            <pre>{log_content}</pre>
         </p>
       </body>
@@ -78,22 +80,37 @@ def send_mail(timenow, log_file_path):
 
 def alarm():
     x = 0
+    count = 0
     now = datetime.now()
     date_today = now.strftime("%Y-%m-%d_")
     while x == x:
-        log_file_path = f"../../logs/{date_today}CPU.log"
-        cpu_log = open(f'{log_file_path}', 'r')
-        lines = cpu_log.readlines()
+        cpu_log_file_path = f"../../logs/{date_today}CPU.log"
+        cpu_log = open(f'{cpu_log_file_path}', 'r')
+        cpu_lines = cpu_log.readlines()
+        for line in cpu_lines:
+            count += 1
+            print("L{}: {}".format(count, line.strip()))
 
-        timenow = now.strftime("%Y-%m-%d, %H:%M:%S")
-
-        count = 0
-        # Strips the newline character
-        for line in lines:
+        disk_log_file_path = f"../../logs/{date_today}DISK.log"
+        disk_log = open(f'{disk_log_file_path}', 'r')
+        disk_lines = disk_log.readlines()
+        for line in disk_lines:
             count += 1
             print("Line{}: {}".format(count, line.strip()))
+
+        ram_log_file_path = f"../../logs/{date_today}RAM.log"
+        ram_log = open(f'{disk_log_file_path}', 'r')
+        ram_lines = ram_log.readlines()
+        for line in ram_lines:
+            count += 1
+            print("Line{}: {}".format(count, line.strip()))
+        time_now = now.strftime("%Y-%m-%d, %H:%M:%S")
+
+
+        # Strips the newline character
+
         print(x)
-        send_mail(timenow, log_file_path)
+        send_mail(time_now, cpu_log_file_path)
         time.sleep(60)
 
 
