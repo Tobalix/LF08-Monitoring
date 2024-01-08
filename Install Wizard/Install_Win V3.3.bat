@@ -165,6 +165,9 @@ REM Bearbeiten der Konfigurationsdatei
 REM Umbenennen der temporären Konfigurationsdatei
 move /y "temp_config.ini" "!configFile!" > nul
 
+pip install psutil
+pip install wmi
+
 echo.
 echo SMTP-Konfiguration wurde aktualisiert: "!configFile!"
 pause
