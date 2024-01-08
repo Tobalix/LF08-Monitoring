@@ -46,11 +46,11 @@ def send_mail(timenow, log_file_path):
     message.attach(part)
 
     # Attachment of logs
-    file_path = "../../logs/2023-12-20_CPU.log"  # Replace with the actual path to your file
+    file_path = "../../logs/2024-01-08_CPU.log"  # Replace with the actual path to your file
     attachment = open(file_path, "rb")
     mime_type = "text/plain"
     part = MIMEBase(*mime_type.split("/"))
-    part.set_payload((attachment).read())
+    part.set_payload(attachment.read())
     encoders.encode_base64(part)
     filename = os.path.basename(log_file_path)
     part.add_header("Content-Disposition", f"attachment; filename= {filename}")
@@ -78,16 +78,18 @@ def send_mail(timenow, log_file_path):
 
 def alarm():
     x = 0
-    while (x == x):
-        log_file_path = "../../logs/2023-12-20_CPU.log"
+    now = datetime.now()
+    date_today = now.strftime("%Y-%m-%d_")
+    while x == x:
+        log_file_path = f"../../logs/{date_today}CPU.log"
         cpu_log = open(f'{log_file_path}', 'r')
-        Lines = cpu_log.readlines()
-        now = datetime.now()
+        lines = cpu_log.readlines()
+
         timenow = now.strftime("%Y-%m-%d, %H:%M:%S")
 
         count = 0
         # Strips the newline character
-        for line in Lines:
+        for line in lines:
             count += 1
             print("Line{}: {}".format(count, line.strip()))
         print(x)
