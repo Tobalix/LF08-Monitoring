@@ -1,7 +1,7 @@
+import configparser
+from colorama import Fore, Back, Style
 import datetime
-import mimetypes
 import os.path
-
 import smtplib
 import ssl
 import time
@@ -11,33 +11,41 @@ from datetime import datetime
 from email.mime.base import MIMEBase
 from email import encoders
 
-
-# from src.log_examples.monitor import cpu_log, ram_log, disk_log
-
+GREEN = Fore.GREEN
+YELLOW = Fore.YELLOW
+RED = Fore.RED
+RESET = Fore.RESET
+WARNING = "WARNING"
+INFO = "INFO"
 
 def send_mail(timenow, log_file_path, alarm_type):
     # Setup
+    config = configparser.ConfigParser()
+    config.read("..\..\config.ini")
+
     smtp_server = "smtp.mail.de"
     port = 25
-    sender_email = "IT.Monitor@mail.de"
-    receiver_email = "IT.Monitor@mail.de"
-    password = "bagel-footman-prevent"
+    SENDER_EMAIL = str(config['SMTP']['EMAIL_SENDER'])
+    PASSWORD = str(config['SMTP']['EMAIL_PASSWORD'])
+    RECEIVER_EMAIL = str(config['SMTP']['EMAIL_RECEIVER'])
 
     message = MIMEMultipart("alternative")
     message["Subject"] = "Monitoring Alarm"
-    message["From"] = sender_email
-    message["To"] = receiver_email
+    message["From"] = SENDER_EMAIL
+    message["To"] = RECEIVER_EMAIL
 
     with open(log_file_path, "r") as log_file:
-        log_content = log_file.readlines()[-1]
+
+        log_content = log_file.readlines()[-5:]
+        send_content = "".join(log_content)
 
     html = f"""\
     <html>
       <body>
         <p>Hello,<br>
            Your alarm has triggered at {timenow} for {alarm_type} <br>
-           Last Value of {alarm_type}
-           <pre>{log_content}</pre>
+           Last Values of {alarm_type}:
+           <pre>{send_content}</pre>
         </p>
       </body>
     </html>
@@ -64,9 +72,8 @@ def send_mail(timenow, log_file_path, alarm_type):
     try:
         server = smtplib.SMTP(smtp_server, port, timeout=10)
         server.starttls(context=context)  # Secure the connection
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, message.as_string())
-
+        server.login(SENDER_EMAIL, PASSWORD)
+        server.sendmail(SENDER_EMAIL, RECEIVER_EMAIL, message.as_string())
 
     except Exception as e:
         # Print any error messages to stdout
@@ -78,7 +85,8 @@ def send_mail(timenow, log_file_path, alarm_type):
 
 def alarm():
     x = 0
-    alarm_type = "CPU"
+
+
     now = datetime.now()
     date_today = now.strftime("%Y-%m-%d_")
     while x == x:
@@ -89,7 +97,8 @@ def alarm():
         count = 0
         for line in cpu_lines:
             count += 1
-            print("L{}: {}".format(count, line.strip()))
+            print("CPU L{}: {}".format(count, line.strip()))
+        print("\n")
 
         disk_log_file_path = f"../../logs/{date_today}DISK.log"
         disk_log = open(f'{disk_log_file_path}', 'r')
@@ -97,7 +106,8 @@ def alarm():
         count = 0
         for line in disk_lines:
             count += 1
-            print("Line{}: {}".format(count, line.strip()))
+            print("DISK L{}: {}".format(count, line.strip()))
+        print("\n")
 
         ram_log_file_path = f"../../logs/{date_today}RAM.log"
         ram_log = open(f'{ram_log_file_path}', 'r')
@@ -105,28 +115,45 @@ def alarm():
         count = 0
         for line in ram_lines:
             count += 1
-            print("Line{}: {}".format(count, line.strip()))
+            print("RAM L{}: {}".format(count, line.strip()))
+        print("\n")
 
         time_now = now.strftime("%Y-%m-%d, %H:%M:%S")
+        alarm_message = "Alarm Email was sent for"
+        info_message = "Info Email was sent for"
+        no_mail_message = "No Email sent for"
 
-        if cpu_lines[-1].split(" ")[0] == "WARNING":
-            alarm_type = "CPU"
+# Send Alarm or not?
+        alarm_type = "CPU"
+        if cpu_lines[-1].split(" ")[0] == INFO:
             send_mail(time_now, cpu_log_file_path, alarm_type)
-            time.sleep(500)
-        if disk_lines[-1].split(" ")[0] == "WARNING":
-            alarm_type = "DISK"
-            send_mail(time_now, disk_log_file_path, alarm_type)
-            time.sleep(500)
-        if ram_lines[-1].split(" ")[0] == "WARNING":
-            alarm_type = "RAM"
-            send_mail(time_now, ram_log_file_path, alarm_type)
-            time.sleep(500)
+            print(YELLOW + info_message, alarm_type)
+        elif cpu_lines[-1].split(" ")[0] == WARNING:
+            send_mail(time_now, cpu_log_file_path, alarm_type)
+            print(RED + alarm_message, alarm_type)
         else:
-            print("no email sent")
+            print(GREEN + no_mail_message, alarm_type)
+
+        alarm_type = "DISK"
+        if disk_lines[-1].split(" ")[0] == INFO:
+            send_mail(time_now, disk_log_file_path, alarm_type)
+            print(YELLOW + alarm_message, alarm_type)
+        elif disk_lines[-1].split(" ")[0] == WARNING:
+            send_mail(time_now, disk_log_file_path, alarm_type)
+            print(RED + alarm_message, alarm_type)
+        else:
+            print(GREEN + no_mail_message, alarm_type)
+
+        alarm_type = "RAM"
+        if ram_lines[-1].split(" ")[0] == INFO:
+            send_mail(time_now, ram_log_file_path, alarm_type)
+            print(YELLOW + alarm_message, alarm_type)
+        elif ram_lines[-1].split(" ")[0] == WARNING:
+            send_mail(time_now, ram_log_file_path, alarm_type)
+            print(RED + alarm_message, alarm_type)
+        else:
+            print(GREEN + no_mail_message, alarm_type)
             time.sleep(5)
-
-        print(x)
-        # send_mail(time_now, cpu_log_file_path, alarm_type)
+        print(RESET)
 
 
-alarm()
