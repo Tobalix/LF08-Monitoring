@@ -5,6 +5,8 @@ import time
 import configparser
 import wmi
 import win32evtlog
+from constants import YELLOW, RESET
+
 
 
 # Config file is loaded
@@ -15,7 +17,7 @@ config.read("..\..\config.ini")
 
 # Values from the config.ini
 CPU_LOGGING = bool(config['Monitor CPU']["CPU_LOGGING"])
-print(CPU_LOGGING)
+
 CPU_INTERVAL = int(config['Monitor CPU']["CPU_INTERVAL"])
 CPU_SOFTWARN = int(config['Monitor CPU']["CPU_SOFTWARN"])
 CPU_HARDWARN = int(config['Monitor CPU']["CPU_HARDWARN"])
@@ -83,9 +85,10 @@ def ram_logger(PATH):
     else:
         ram_log.debug("DEBUG %s RAM: %s" % (dt_string, ram_use))
     # Close the Log file
+
     ram_log.removeHandler(hdlr=ram_handler)
     ram_handler.close()
-    return
+
 
 
 def disk_logger(PATH):
@@ -171,8 +174,8 @@ def logon_logger(PATH):
         win32evtlog.CloseEventLog(handle)
     return
 
-
 def start():
+    print(YELLOW, "Monitoring program starts" + RESET)
     x = 0
     while x == x:
         # print(x)
@@ -194,5 +197,5 @@ def start():
         #      logon_logger(LOG_PATH)
         # print("TEMP")
         time.sleep(1)
-        print(datetime.timedelta(seconds=x))
+       # print(datetime.timedelta(seconds=x))
         x = x + 1
