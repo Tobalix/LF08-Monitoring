@@ -3,9 +3,9 @@ import logging
 import datetime
 import time
 import configparser
-import os
 import wmi
 import win32evtlog
+
 
 # Config file is loaded
 # CONFIG_PATH = os.environ["Monitor"]+"\\config.ini"
@@ -162,7 +162,7 @@ def logon_logger(PATH):
                     if part.EventID == 4624:
                         logon_log.info("INFO %s LOGON: %s" % (dt_string, "Erfolgreicher Anmeldeversuch"))
                     elif part.EventID == 4625:
-                        logon_log.warning("WARNING %s LOGON: %s" % (dt_string, "Fehelgeschlagener Anmeldeversuch"))
+                        logon_log.warning("WARNING %s LOGON: %s" % (dt_string, "Fehlgeschlagener Anmeldeversuch"))
 
             # Close Log file
         logon_log.removeHandler(hdlr=logon_handler)
@@ -172,25 +172,27 @@ def logon_logger(PATH):
     return
 
 
-x = 0
-while (x == x):
-    # print(x)
-    if (x % CPU_INTERVAL == 0) and CPU_LOGGING == True:
-        cpu_logger(LOG_PATH)
-        # print("CPU")
-    if x % RAM_INTERVAL == 0 and RAM_LOGGING == True:
-        ram_logger(LOG_PATH)
-        # print("RAM")
-    if x % DISK_INTERVAL == 0 and DISK_LOGGING == True:
-        disk_logger(LOG_PATH)
-        # print("DISK")
-    time.sleep(0)
-    # if x%TEMP_INTERVAL == 0 and TEMP_LOGGING == True:
-    #     temp_logger(LOG_PATH)
-    # print("TEMP")
-    #  if x%LOGON_INTERVAL == 0 and LOGON_LOGGING == True:
-    #      logon_logger(LOG_PATH)
-    # print("TEMP")
-    time.sleep(1)
-    print(datetime.timedelta(seconds=x))
-    x = x + 1
+def start():
+    x = 0
+    while x == x:
+        # print(x)
+        if (x % CPU_INTERVAL == 0) and CPU_LOGGING == True:
+            cpu_logger(LOG_PATH)
+            # print("CPU")
+        if x % RAM_INTERVAL == 0 and RAM_LOGGING == True:
+            ram_logger(LOG_PATH)
+            # print("RAM")
+        if x % DISK_INTERVAL == 0 and DISK_LOGGING == True:
+            disk_logger(LOG_PATH)
+            # print("DISK")
+
+        time.sleep(0)
+        # if x%TEMP_INTERVAL == 0 and TEMP_LOGGING == True:
+        #     temp_logger(LOG_PATH)
+        # print("TEMP")
+        #  if x%LOGON_INTERVAL == 0 and LOGON_LOGGING == True:
+        #      logon_logger(LOG_PATH)
+        # print("TEMP")
+        time.sleep(1)
+        print(datetime.timedelta(seconds=x))
+        x = x + 1

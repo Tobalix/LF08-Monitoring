@@ -85,7 +85,7 @@ def send_mail(timenow, log_file_path, alarm_type):
 
 def alarm():
     x = 0
-
+    time.sleep(10)
 
     now = datetime.now()
     date_today = now.strftime("%Y-%m-%d_")
@@ -119,9 +119,9 @@ def alarm():
         print("\n")
 
         time_now = now.strftime("%Y-%m-%d, %H:%M:%S")
-        alarm_message = "Alarm Email was sent for"
-        info_message = "Info Email was sent for"
-        no_mail_message = "No Email sent for"
+        alarm_message = "MESSAGE: Alarm Email was sent for"
+        info_message = "MESSAGE: Info Email was sent for"
+        no_mail_message = "MESSAGE: No Email sent for"
 
 # Send Alarm or not?
         alarm_type = "CPU"
