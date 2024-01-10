@@ -1,4 +1,4 @@
-from constants import *
+from src.python_version.resources.constants import *
 import datetime
 import time
 from datetime import datetime
@@ -7,7 +7,7 @@ from sending_emails import send_mail, send_mail_summary
 
 def alarm():
     x = 0
-    print(YELLOW, "Alarms program starts in 5 sec")
+    print(YELLOW, "Alarm program starts in 5 sec")
     print(RESET)
     time.sleep(5)
     now = datetime.now()

@@ -1,4 +1,4 @@
-from constants import *
+from src.python_version.resources.constants import *
 import os
 import smtplib
 import ssl

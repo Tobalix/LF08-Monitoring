@@ -5,7 +5,7 @@ import time
 import configparser
 import wmi
 import win32evtlog
-from constants import YELLOW, RESET
+from src.python_version.resources.constants import YELLOW, RESET
 
 
 
