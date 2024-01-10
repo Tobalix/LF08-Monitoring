@@ -1,6 +1,18 @@
-import unittest
+from unittest import TestCase
 
 
-class TestMonitoring(unittest.TestCase):
- def setUp(self):
-     self.assertTrue(True)
+class Test(TestCase):
+    def test_cpu_logger(self):
+        self.fail()
+
+    def test_ram_logger(self):
+        self.fail()
+
+    def test_disk_logger(self):
+        self.fail()
+
+    def test_temp_logger(self):
+        self.fail()
+
+    def test_logon_logger(self):
+        self.fail()
