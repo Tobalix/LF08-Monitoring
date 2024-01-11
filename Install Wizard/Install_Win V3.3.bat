@@ -15,9 +15,9 @@ if not exist "!installFolder!" (
 
 ) else (
     REM Installationsordner existiert - lösche alle vorhandenen Elemente im Ordner
-    set /p canDeleteInstallFolder= Der Installationsordner existiert bereits kann er gelöscht werden Ja oder Nein?:
+    set /p canDeleteInstallFolder= Der Installationsordner existiert bereits kann er gelöscht werden J/N?:
 
-    if /I "!canDeleteInstallFolder!"=="Ja" (
+    if /I "!canDeleteInstallFolder!"=="J" (
     echo Der Installationsordner "!installFolder!" wird gelöscht! Alle vorhandenen Elemente werden gelöscht.
     rd /s /q "!installFolder!"
     mkdir "!installFolder!"
