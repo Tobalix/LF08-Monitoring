@@ -15,9 +15,16 @@ if not exist "!installFolder!" (
 
 ) else (
     REM Installationsordner existiert - lösche alle vorhandenen Elemente im Ordner
-    echo Der Installationsordner "!installFolder!" existiert bereits. Alle vorhandenen Elemente werden gelöscht.
+    set /p canDeleteInstallFolder= Der Installationsordner existiert bereits kann er gelöscht werden Ja oder Nein?:
+
+    if /I "!canDeleteInstallFolder!"=="Ja" (
+    echo Der Installationsordner "!installFolder!" wird gelöscht! Alle vorhandenen Elemente werden gelöscht.
     rd /s /q "!installFolder!"
     mkdir "!installFolder!"
+    ) else (
+    echo Bitte geben sie einen Ordner an der nicht existiert oder gelöscht und neu erstellt werden kann.
+    exit /b
+    )
 )
 
 REM Wechseln in das Installationsverzeichnis

@@ -93,8 +93,7 @@ def send_mail_summary(cpu_log_file_path, disk_log_file_path, ram_log_file_path):
     part = MIMEText(html, "html")
     message.attach(part)
 
-    # Attachment of logs
-    file_path = f"{cpu_log_file_path}"  # Replace with the actual path to your file
+    file_path = f"{cpu_log_file_path}"
     attachment = open(file_path, "rb")
     mime_type = "text/plain"
     part = MIMEBase(*mime_type.split("/"))
@@ -104,7 +103,7 @@ def send_mail_summary(cpu_log_file_path, disk_log_file_path, ram_log_file_path):
     part.add_header("Content-Disposition", f"attachment; filename= {filename}")
     message.attach(part)
 
-    file_path = f"{disk_log_file_path}"  # Replace with the actual path to your file
+    file_path = f"{disk_log_file_path}"
     attachment = open(file_path, "rb")
     mime_type = "text/plain"
     part = MIMEBase(*mime_type.split("/"))
@@ -114,7 +113,7 @@ def send_mail_summary(cpu_log_file_path, disk_log_file_path, ram_log_file_path):
     part.add_header("Content-Disposition", f"attachment; filename= {filename}")
     message.attach(part)
 
-    file_path = f"{ram_log_file_path}"  # Replace with the actual path to your file
+    file_path = f"{ram_log_file_path}"
     attachment = open(file_path, "rb")
     mime_type = "text/plain"
     part = MIMEBase(*mime_type.split("/"))

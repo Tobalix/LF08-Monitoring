@@ -3,7 +3,6 @@ from monitor import start
 from alarm import alarm
 
 
-
 def monitoring(seconds):
     start()
 

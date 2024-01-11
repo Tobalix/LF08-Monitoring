@@ -46,6 +46,15 @@ def alarm():
         info_message = "MESSAGE: Info Email was sent for"
         no_mail_message = "MESSAGE: No Email sent for"
 
+        time_for_summary = datetime.now()
+        is_time_for_summary = float(time_for_summary.strftime("%H.%M"))
+        print("Hour of Day:", is_time_for_summary)
+
+# Daily Summary Email
+        if is_time_for_summary == 12.23:
+            print("Sending Summary of today.")
+            send_mail_summary(cpu_log_file_path, disk_log_file_path, ram_log_file_path)
+
         # Send Alarm or not?
         alarm_type = CPU
         if cpu_lines[-1].split(" ")[0] == INFO:
@@ -79,10 +88,3 @@ def alarm():
             time.sleep(5)
 
         print(RESET)
-        time_for_summary = datetime.now()
-        is_time_for_summary = float(time_for_summary.strftime("%H.%M"))
-        print("Hour of Day:", is_time_for_summary)
-
-        if is_time_for_summary == 23.59:
-            print("Sending Summary of today.")
-            send_mail_summary(cpu_log_file_path, disk_log_file_path, ram_log_file_path)
