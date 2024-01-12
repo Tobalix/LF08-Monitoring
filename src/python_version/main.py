@@ -1,6 +1,6 @@
 from multiprocessing import Process
 from monitor import start
-from alarm import Alarm
+from alarm import alarm
 
 
 def monitoring(seconds):
@@ -8,7 +8,7 @@ def monitoring(seconds):
 
 
 def alarming(seconds):
-    Alarm().alarm()
+    alarm()
 
 
 p1 = Process(target=monitoring, args=[1])
